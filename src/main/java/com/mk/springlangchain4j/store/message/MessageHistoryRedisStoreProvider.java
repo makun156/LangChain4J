@@ -1,6 +1,5 @@
 package com.mk.springlangchain4j.store.message;
 
-import com.mk.springlangchain4j.config.SessionContext;
 import dev.langchain4j.data.message.ChatMessage;
 import dev.langchain4j.data.message.ChatMessageDeserializer;
 import dev.langchain4j.data.message.ChatMessageSerializer;

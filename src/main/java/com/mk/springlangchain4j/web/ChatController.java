@@ -2,7 +2,6 @@ package com.mk.springlangchain4j.web;
 
 import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.mk.springlangchain4j.config.SessionContext;
 import com.mk.springlangchain4j.entity.ChatConversationEntity;
 import com.mk.springlangchain4j.entity.ChatMessageEntity;
 import com.mk.springlangchain4j.enums.MessageRole;
@@ -16,7 +15,6 @@ import dev.langchain4j.data.message.*;
 import dev.langchain4j.data.message.ChatMessageType;
 import dev.langchain4j.model.chat.ChatModel;
 import dev.langchain4j.model.chat.StreamingChatModel;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.MediaType;
