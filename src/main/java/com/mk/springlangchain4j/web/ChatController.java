@@ -12,7 +12,6 @@ import com.mk.springlangchain4j.service.CustomAiService;
 import com.mk.springlangchain4j.store.message.MessageHistoryRedisStoreProvider;
 import com.mk.springlangchain4j.vo.ChatConversationVo;
 import dev.langchain4j.data.message.*;
-import dev.langchain4j.data.message.ChatMessageType;
 import dev.langchain4j.model.chat.ChatModel;
 import dev.langchain4j.model.chat.StreamingChatModel;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -183,4 +182,6 @@ public class ChatController {
                 .data(chatMessageEntities)
                 .build();
     }
+
+
 }

@@ -3,8 +3,6 @@ package com.mk.springlangchain4j.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.mk.springlangchain4j.entity.ChatMessageEntity;
 
-import java.util.List;
-
 /**
  * 对话消息表 服务类
  */

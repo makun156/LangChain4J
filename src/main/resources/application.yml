@@ -1,3 +1,4 @@
+
 langchain4j:
   open-ai:
     chat-model:
@@ -21,6 +22,13 @@ langchain4j:
       log-requests: true
       log-responses: true
       max-retries: 3
+
+# 搜索API配置
+search:
+  api:
+    key: 8UmKPT3iLUdXtWmrUPj5a7oz
+    engine: bing # 搜索引擎，可选: google, bing, baidu等
+
 spring:
   data:
     redis:
@@ -33,6 +41,22 @@ spring:
     username: root
     password: fbx@123456
     driver-class-name: com.mysql.cj.jdbc.Driver
+    type: com.alibaba.druid.pool.DruidDataSource
+    druid:
+      initial-size: 5
+      min-idle: 5
+      max-active: 20
+      max-wait: 60000
+      validation-query: SELECT 1
+      test-while-idle: true
+      test-on-borrow: false
+      test-on-return: false
+      # 连接超时配置
+      time-between-eviction-runs-millis: 60000 # 检查间隔(ms)
+      min-evictable-idle-time-millis: 300000   # 最小空闲时间(ms)
+      max-evictable-idle-time-millis: 900000   # 最大空闲时间(ms)
+      init:
+        enabled: true
 #mybatis-plus:
 #  type-aliases-package: com.mk.springlangchain4j.entity
 #  configuration:

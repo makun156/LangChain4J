@@ -1,15 +1,10 @@
 package com.mk.springlangchain4j.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.mk.springlangchain4j.entity.ChatConversationEntity;
 import com.mk.springlangchain4j.mapper.CustomChatConversationMapper;
 import com.mk.springlangchain4j.service.ChatConversationService;
 import org.springframework.stereotype.Service;
-
-import java.time.LocalDateTime;
-import java.util.List;
 
 /**
  * 对话主表 服务实现类
