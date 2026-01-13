@@ -50,7 +50,7 @@ public class VectorController {
             builder.append(itemVectorRes.embedded().text()).append("。");
         });
         //向量化文本
-        vectorDto.ragContent=builder.toString();
+        vectorDto.ragContent=(vectorDto.queryContent+ builder);
         return aiService.streamingVectorChat(vectorDto.getMemoryId(), vectorDto.queryContent);
     }
 
@@ -156,7 +156,6 @@ public class VectorController {
 
     /**
      * 传统全文搜索 - 基于关键词匹配
-     * 注意：此实现为模拟全文搜索，实际项目中建议使用专门的全文搜索引擎如Elasticsearch
      */
     @GetMapping("fullTextSearch")
     public ResponseResult fullTextSearch(

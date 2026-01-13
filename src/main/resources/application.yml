@@ -2,32 +2,34 @@
 langchain4j:
   open-ai:
     chat-model:
-      api-key: sk-df5b3cf1af454cd5af6436c9fa422126
+      api-key: sk-f040796ae0bd4e8c9c81dc462aae0c70
       base-url: https://dashscope.aliyuncs.com/compatible-mode/v1
-      model-name: qwen-plus
+      model-name: qwen3-max
       log-requests: true
       log-responses: true
       max-retries: 3
     streaming-chat-model:
-      api-key: sk-df5b3cf1af454cd5af6436c9fa422126
+      api-key: sk-f040796ae0bd4e8c9c81dc462aae0c70
       base-url: https://dashscope.aliyuncs.com/compatible-mode/v1
-      model-name: qwen-plus
+      model-name: qwen3-max
       log-requests: true
       log-responses: true
       max-retries: 3
     embedding-model:
-      api-key: sk-df5b3cf1af454cd5af6436c9fa422126
+      api-key: sk-f040796ae0bd4e8c9c81dc462aae0c70
       base-url: https://dashscope.aliyuncs.com/compatible-mode/v1
       model-name: text-embedding-v4
       log-requests: true
       log-responses: true
       max-retries: 3
 
+bigmodel:
+  api-key: 4b870e36dbc3480e9d5cd9974e3c79dc.XNjVY86m0TejXPYl
 # 搜索API配置
 search:
   api:
-    key: 8UmKPT3iLUdXtWmrUPj5a7oz
-    engine: bing # 搜索引擎，可选: google, bing, baidu等
+    key: 123 # 请在此处配置您的SearchAPI密钥
+    engine: google # 搜索引擎，可选: google, bing, baidu等
 
 spring:
   data:

@@ -4,9 +4,13 @@ import com.mk.springlangchain4j.service.CustomAiService;
 import com.mk.springlangchain4j.service.VectorAiService;
 import com.mk.springlangchain4j.service.WebSearchAiService;
 import com.mk.springlangchain4j.store.message.MessageHistoryRedisStoreProvider;
-import dev.langchain4j.agent.tool.ToolSpecification;
-import dev.langchain4j.agent.tool.ToolSpecifications;
 import dev.langchain4j.data.segment.TextSegment;
+import dev.langchain4j.mcp.McpToolProvider;
+import dev.langchain4j.mcp.client.DefaultMcpClient;
+import dev.langchain4j.mcp.client.McpClient;
+import dev.langchain4j.mcp.client.transport.McpTransport;
+import dev.langchain4j.mcp.client.transport.http.HttpMcpTransport;
+import dev.langchain4j.mcp.client.transport.stdio.StdioMcpTransport;
 import dev.langchain4j.memory.chat.ChatMemoryProvider;
 import dev.langchain4j.memory.chat.MessageWindowChatMemory;
 import dev.langchain4j.model.chat.ChatModel;
@@ -15,10 +19,9 @@ import dev.langchain4j.model.embedding.EmbeddingModel;
 import dev.langchain4j.rag.content.retriever.ContentRetriever;
 import dev.langchain4j.rag.content.retriever.EmbeddingStoreContentRetriever;
 import dev.langchain4j.service.AiServices;
+import dev.langchain4j.service.tool.ToolProvider;
 import dev.langchain4j.store.embedding.EmbeddingStore;
-import dev.langchain4j.store.embedding.EmbeddingStoreIngestor;
 import dev.langchain4j.store.embedding.milvus.MilvusEmbeddingStore;
-import dev.langchain4j.web.search.WebSearchEngine;
 import dev.langchain4j.web.search.WebSearchTool;
 import dev.langchain4j.web.search.searchapi.SearchApiWebSearchEngine;
 import io.milvus.common.clientenum.ConsistencyLevelEnum;
@@ -29,11 +32,32 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Configuration
 public class LangChain4JConfig {
+    @Value("${bigmodel.api-key}")
+    String apiKey;
+    //@Bean
+    //public ToolProvider mcpToolProvider(){
+    //    McpTransport transport = new StdioMcpTransport.Builder()
+    //            //.command(List.of("cmd", "/c", "npx","-y","@amap/amap-maps-mcp-server"))
+    //            .command(List.of("cmd", "/c", "npx","-y","@baidumap/mcp-server-baidu-map"))
+    //            .environment(Map.of("BAIDU_MAP_API_KEY","UMfVCwZ87JaNSrhQe1vrZrY4X888KniF"))
+    //            //.logEvents(true)
+    //            .build();
+    //    McpClient mcpClient = new DefaultMcpClient.Builder()
+    //            //.key("MyMCPClient")
+    //            .transport(transport)
+    //            .build();
+    //    ToolProvider toolProvider = McpToolProvider.builder()
+    //            .mcpClients(mcpClient)
+    //            .build();
+    //    return toolProvider;
+    //}
+
+
     @Autowired
     ChatModel chatModel;
     @Autowired
@@ -42,16 +66,17 @@ public class LangChain4JConfig {
     MessageHistoryRedisStoreProvider messageHistoryRedisStoreProvider;
     @Autowired
     EmbeddingModel embeddingModel;
-
     @Bean
-    public CustomAiService customAiService(ChatMemoryProvider chatMemoryProvider, ContentRetriever contentRetriever) {
+    public CustomAiService customAiService(ChatMemoryProvider chatMemoryProvider) {
+    //public CustomAiService customAiService(ToolProvider mcpToolProvider,ChatMemoryProvider chatMemoryProvider) {
         return AiServices.builder(CustomAiService.class)
                 .chatModel(chatModel)
                 .streamingChatModel(streamingChatModel)
                 .chatMemoryProvider(chatMemoryProvider)
+                //.toolProvider(mcpToolProvider)
+                //.tools(new FuncCallingTools(),mcpToolProvider)
                 .build();
     }
-
     @Bean
     public VectorAiService vectorAiService(ChatMemoryProvider chatMemoryProvider, ContentRetriever contentRetriever) {
         return AiServices.builder(VectorAiService.class)
@@ -60,34 +85,23 @@ public class LangChain4JConfig {
                 .contentRetriever(contentRetriever)
                 .build();
     }
-
     @Value("${search.api.key:}")
     private String searchApiKey;
 
     @Value("${search.api.engine:google}")
     private String searchEngine;
 
-    @Bean
-    public WebSearchAiService webSearchAiService() {
-        if (searchApiKey == null || searchApiKey.trim().isEmpty()) {
-            throw new IllegalStateException("Search API key is not configured. Please set 'search.api.key' in application.yml");
-        }
-        Map<String, Object> parameter = new HashMap<>();
-
-        parameter.put("engine", "baidu");
-        parameter.put("q", "Coffee");
-        parameter.put("api_key", "f72a9b018803fb99c3ce3e790be533fd6d9226bd40597f25ecff83dc9a941d47");
-        SearchApiWebSearchEngine webSearchEngine = SearchApiWebSearchEngine.builder()
-                .apiKey(searchApiKey)
-                .engine(searchEngine)
-                //.optionalParameters(parameter)
-                .build();
-        return AiServices.builder(WebSearchAiService.class)
-                .streamingChatModel(streamingChatModel)
-                .tools(new WebSearchTool(webSearchEngine))
-                .build();
-    }
-
+    //@Bean
+    //public WebSearchAiService webSearchAiService(){
+    //    SearchApiWebSearchEngine webSearchEngine = SearchApiWebSearchEngine.builder()
+    //            .apiKey(searchApiKey)
+    //            .engine(searchEngine)
+    //            .build();
+    //    return AiServices.builder(WebSearchAiService.class)
+    //            .streamingChatModel(streamingChatModel)
+    //            .tools(new WebSearchTool(webSearchEngine),new FuncCallingTools())
+    //            .build();
+    //}
     @Bean
     public ChatMemoryProvider chatMemoryProvider() {
         return memoryId -> MessageWindowChatMemory.builder()
@@ -115,9 +129,8 @@ public class LangChain4JConfig {
                 .metadataFieldName("metadata")
                 .build();
     }
-
     @Bean
-    public ContentRetriever contentRetriever(EmbeddingStore<TextSegment> milvusEmbeddingStore) {
+    public ContentRetriever contentRetriever(EmbeddingStore<TextSegment> milvusEmbeddingStore){
         return EmbeddingStoreContentRetriever.builder()
                 .embeddingStore(milvusEmbeddingStore)
                 .embeddingModel(embeddingModel)
